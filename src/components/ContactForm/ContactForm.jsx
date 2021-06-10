@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import operations from '../../redux/phonebook/contacts-operations.js';
 import { connect } from 'react-redux';
+import store from '../../redux/store'
 import shortid from 'shortid';
 import css from './ContactForm.module.css'
 
@@ -16,22 +17,30 @@ class ContactForm extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  // handleChange = event => {
-  //   const {name, value} = event.currentTarget
-
-  //   this.setState({
-  //     [name]: value,
-  //   });
-  // };
-
-  reset = () => {
-    this.setState({ name: '', number: '' });
-  };
-
-  handleSubmit = event => {
+    handleSubmit = event => {
     event.preventDefault();
+
+    const { name } = this.state;
+    const contacts = store.store.getState().contacts.items;
+    if (contacts.some(contact => contact.name === name)) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+
     this.props.onAdd(this.state);
     this.reset();
+  };
+
+  // handleSubmit = event => {
+	// 	event.preventDefault();
+		
+		
+  //   this.props.onAdd(this.state);
+  //   this.reset();
+	// };
+	
+	reset = () => {
+    this.setState({ name: '', number: '' });
   };
 
   render() {
